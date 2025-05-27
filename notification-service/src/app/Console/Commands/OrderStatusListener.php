@@ -27,7 +27,23 @@ class OrderStatusListener extends Command
      * Execute the console command.
      * @throws \Exception
      */
-    public function handle()
+    public function handle(): void
+    {
+        [$connection, $channel, $queueName] = $this->setupChannel();
+
+        $channel->basic_consume($queueName, '', false, false, false, false, function ($msg) {
+            $this->processMessage($msg);
+        });
+
+        while ($channel->is_consuming()) {
+            $channel->wait();
+        }
+    }
+
+    /**
+     * @throws \Exception
+     */
+    protected function setupChannel(): array
     {
         $connection = new AMQPStreamConnection(
             config('rabbitmq.host'),
@@ -39,40 +55,50 @@ class OrderStatusListener extends Command
         $channel = $connection->channel();
 
         $exchangeName = 'orders_exchange';
-        $statusQueueName = 'order_status_queue';
-        $statusRoutingKey = 'order_status_updated';
+        $queueName = 'order_notification_queue';
+        $routingKey = 'order_status_updated';
 
         $channel->exchange_declare($exchangeName, 'direct', false, true, false);
-        $channel->queue_declare($statusQueueName, false, true, false, false);
-        $channel->queue_bind($statusQueueName, $exchangeName, $statusRoutingKey);
+        $channel->queue_declare($queueName, false, true, false, false);
+        $channel->queue_bind($queueName, $exchangeName, $routingKey);
 
-        $this->info("Listening for order status updates...");
+        return [$connection, $channel, $queueName];
+    }
 
-        $callback = function ($msg) {
-            $data = json_decode($msg->body, true);
-            $orderData = $data['order_data'];
-            var_dump($orderData);
+    protected function processMessage($msg): void
+    {
+        $data = json_decode($msg->body, true);
 
-            if (!$data) {
-                $this->warn('Invalid order status message received');
-                $msg->ack();
-                return;
-            }
-
-            if (isset($orderData['email'])) {
-                Mail::to($orderData['email'])->send(new OrderNotificationMail($orderData));
-                $this->info("Email sent to {$orderData['email']} for order {$orderData['id']}");
-            } else {
-                $this->warn('Customer email not found in order data');
-            }
-
+        if (!$this->validateMessageData($data)) {
+            logger()->warning('Invalid order status message received', ['body' => $msg->body]);
             $msg->ack();
-        };
-
-        $channel->basic_consume($statusQueueName, '', false, false, false, false, $callback);
-
-        while ($channel->is_consuming()) {
-            $channel->wait();
+            return;
         }
+
+        $orderData = $data['order_data'];
+
+        if (!isset($orderData['email'])) {
+            logger()->warning('Customer email not found in order data', ['order_data' => $orderData]);
+            $msg->ack();
+            return;
+        }
+
+        try {
+            Mail::to($orderData['email'])->send(new OrderNotificationMail($orderData));
+            logger()->info("Email sent", ['email' => $orderData['email'], 'order_id' => $orderData['id'] ?? null]);
+        } catch (\Throwable $e) {
+            logger()->error('Failed to send order notification email', [
+                'email' => $orderData['email'],
+                'order_id' => $orderData['id'] ?? null,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        $msg->ack();
+    }
+
+    protected function validateMessageData(?array $data): bool
+    {
+        return isset($data['order_data']['email']) && is_array($data) && is_array($data['order_data']);
     }
 }

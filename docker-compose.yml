@@ -181,7 +181,7 @@ services:
       - ./order-service/_docker/scripts:/_docker/scripts:ro
     networks:
       - app-network
-    command: sh /_docker/scripts/start-listener.sh php artisan rabbitmq:order-status-listener
+    command: sh /_docker/scripts/start-listener.sh
 
   stock-listener:
     build:
@@ -205,7 +205,31 @@ services:
       - ./stock-service/_docker/scripts:/_docker/scripts:ro
     networks:
       - app-network
-    command: sh /_docker/scripts/start-listener.sh php artisan rabbitmq:stock-queue-listener
+    command: sh /_docker/scripts/start-listener.sh
+
+  notification-listener:
+    build:
+      context: ./notification-service/src
+      dockerfile: ../_docker/app/Dockerfile
+    container_name: notification-listener
+    depends_on:
+      - rabbitmq
+      - postgres-notification
+    environment:
+      DB_CONNECTION: pgsql
+      DB_HOST: postgres-notification
+      DB_PORT: 5432
+      DB_DATABASE: notification_db
+      DB_USERNAME: user
+      DB_PASSWORD: pass
+      RABBITMQ_HOST: rabbitmq
+    user: "${UID}:${GID}"
+    volumes:
+      - ./notification-service/src:/var/www
+      - ./notification-service/_docker/scripts:/_docker/scripts:ro
+    networks:
+      - app-network
+    command: sh /_docker/scripts/start-listener.sh
 
 networks:
   app-network:

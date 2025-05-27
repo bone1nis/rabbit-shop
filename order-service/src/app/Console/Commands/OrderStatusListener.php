@@ -52,7 +52,7 @@ class OrderStatusListener extends Command
         $channel = $connection->channel();
 
         $exchangeName = 'orders_exchange';
-        $queueName = 'order_status_queue';
+        $queueName = 'order_status-update_queue';
         $routingKey = 'order_status_updated';
 
         $channel->exchange_declare($exchangeName, 'direct', false, true, false);
