@@ -46,14 +46,29 @@
 
 ## Установка и запуск проекта
 
-### 1. Клонирование репозитория
+### 1. Настройка уведомлений через Email
+
+Для отправки писем используется Mailtrap, который позволяет безопасно тестировать email-уведомления в локальной среде.
+
+1. Зарегистрируйтесь на сайте mailtrap.io.
+2. Перейдите во вкладку For developers → Sandbox → Inboxes.
+3. Нажмите Add Inbox, чтобы создать новый инбокс.
+4. Перейдите в созданный инбокс и откройте вкладку SMTP Settings.
+5. Скопируйте username и password, вставьте их в notification-service/src/.env:
+
+```
+MAIL_USERNAME=your_mailtrap_username
+MAIL_PASSWORD=your_mailtrap_password
+```
+
+### 2. Клонирование репозитория
 
 ```bash
 git clone https://github.com/bone1nis/rabbit-shop.git
 cd rabbit-shop
 ```
 
-### 2. Конфигурация окружения
+### 3. Конфигурация окружения
 
 Скопируйте файлы .env:
 
@@ -112,6 +127,17 @@ RABBITMQ_PORT=5672
 RABBITMQ_USER=guest
 RABBITMQ_PASSWORD=guest
 RABBITMQ_QUEUE=notification_queue
+
+SESSION_DRIVER=array
+
+MAIL_MAILER=smtp
+MAIL_HOST=sandbox.smtp.mailtrap.io
+MAIL_PORT=587
+MAIL_USERNAME=your_mailtrap_username
+MAIL_PASSWORD=your_mailtrap_password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=example@example.com
+MAIL_FROM_NAME="Your App Name"
 ```
 
 Настройте параметры в stock-service/src/.env:
@@ -137,7 +163,7 @@ RABBITMQ_PASSWORD=guest
 RABBITMQ_QUEUE=stock_queue
 ```
 
-### 3. Запуск через Docker Compose
+### 4. Запуск через Docker Compose
 
 Соберите и поднимите контейнеры в фоновом режиме:
 
@@ -145,7 +171,7 @@ RABBITMQ_QUEUE=stock_queue
 docker-compose up --build -d
 ```
 
-### 4. Инициализация базы данных и миграции
+### 5. Инициализация базы данных и миграции
 
 Для микросервисов order и notification пропиши миграции и сиды
 
@@ -154,7 +180,7 @@ docker exec -it order-service php artisan migrate --seed
 docker exec -it stock-service php artisan migrate --seed
 ```
 
-### 5. Настройка APP_KEY
+### 6. Настройка APP_KEY
 
 Для безопасности необходимо создать секретный ключ внутри каждого из микросервисов:
 
