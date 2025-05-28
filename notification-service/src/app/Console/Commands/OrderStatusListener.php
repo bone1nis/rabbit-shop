@@ -21,7 +21,7 @@ class OrderStatusListener extends Command
      *
      * @var string
      */
-    protected $description = 'Listen for order status updates';
+    protected $description = 'Listen for order status updates and send notification email';
 
     /**
      * Execute the console command.

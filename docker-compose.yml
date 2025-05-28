@@ -26,20 +26,6 @@ services:
     networks:
       - app-network
 
-  postgres-notification:
-    image: postgres:15
-    restart: always
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: pass
-      POSTGRES_DB: notification_db
-    ports:
-      - "5434:5432"
-    volumes:
-      - pgdata_notification:/var/lib/postgresql/data
-    networks:
-      - app-network
-
   postgres-stock:
     image: postgres:15
     restart: always
@@ -83,14 +69,7 @@ services:
     container_name: notification-service
     depends_on:
       - rabbitmq
-      - postgres-notification
     environment:
-      DB_CONNECTION: pgsql
-      DB_HOST: postgres-notification
-      DB_PORT: 5432
-      DB_DATABASE: notification_db
-      DB_USERNAME: user
-      DB_PASSWORD: pass
       RABBITMQ_HOST: rabbitmq
     user: "${UID}:${GID}"
     volumes:
@@ -214,14 +193,7 @@ services:
     container_name: notification-listener
     depends_on:
       - rabbitmq
-      - postgres-notification
     environment:
-      DB_CONNECTION: pgsql
-      DB_HOST: postgres-notification
-      DB_PORT: 5432
-      DB_DATABASE: notification_db
-      DB_USERNAME: user
-      DB_PASSWORD: pass
       RABBITMQ_HOST: rabbitmq
     user: "${UID}:${GID}"
     volumes:
@@ -237,5 +209,4 @@ networks:
 
 volumes:
   pgdata_order:
-  pgdata_notification:
   pgdata_stock:

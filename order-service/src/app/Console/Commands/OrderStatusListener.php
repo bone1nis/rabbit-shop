@@ -40,6 +40,9 @@ class OrderStatusListener extends Command
         }
     }
 
+    /**
+     * @throws \Exception
+     */
     protected function setupChannel(): array
     {
         $connection = new AMQPStreamConnection(
