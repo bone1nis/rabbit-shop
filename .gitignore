@@ -1,2 +1,25 @@
+# IDEs and editors
 .idea/
 .vscode/
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.*.local
+.env.local
+.env.testing
+.env.production
+
+# Custom
+*.iml
+*.swp
+*.swo
+
+# Coverage
+coverage/
+.nyc_output/
