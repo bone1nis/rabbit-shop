@@ -10,32 +10,22 @@ LICENSE
 .DS_Store
 *.log
 
-# Environment files in the root
-.env
-.env.*
-
 # Build artifacts
 dist
 build
 out
 
 # Laravel microservices - Order Service
-order-service/src/vendor
-order-service/src/node_modules
-order-service/src/storage/*.key
-order-service/src/public/storage
-order-service/src/*.log
+order-service/src/README.md
+order-service/src/.gitignore
+order-service/src/.gitattributes
 
 # Laravel microservices - Stock Service
-stock-service/src/vendor
-stock-service/src/node_modules
-stock-service/src/storage/*.key
-stock-service/src/public/storage
-stock-service/src/*.log
+stock-service/src/README.md
+stock-service/src/.gitignore
+stock-service/src/.gitattributes
 
 # Laravel microservices - Notification Service
-notification-service/src/vendor
-notification-service/src/node_modules
-notification-service/src/storage/*.key
-notification-service/src/public/storage
-notification-service/src/*.log
+notification-service/src/README.md
+notification-service/src/.gitignore
+notification-service/src/.gitattributes
