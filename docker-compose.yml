@@ -48,14 +48,6 @@ services:
     depends_on:
       - rabbitmq
       - postgres-order
-    environment:
-      DB_CONNECTION: pgsql
-      DB_HOST: postgres-order
-      DB_PORT: 5432
-      DB_DATABASE: orders_db
-      DB_USERNAME: user
-      DB_PASSWORD: pass
-      RABBITMQ_HOST: rabbitmq
     user: "${UID}:${GID}"
     volumes:
       - ./order-service/src:/var/www
@@ -69,8 +61,6 @@ services:
     container_name: notification-service
     depends_on:
       - rabbitmq
-    environment:
-      RABBITMQ_HOST: rabbitmq
     user: "${UID}:${GID}"
     volumes:
       - ./notification-service/src:/var/www
@@ -85,14 +75,6 @@ services:
     depends_on:
       - rabbitmq
       - postgres-stock
-    environment:
-      DB_CONNECTION: pgsql
-      DB_HOST: postgres-stock
-      DB_PORT: 5432
-      DB_DATABASE: stock_db
-      DB_USERNAME: user
-      DB_PASSWORD: pass
-      RABBITMQ_HOST: rabbitmq
     user: "${UID}:${GID}"
     volumes:
       - ./stock-service/src:/var/www
@@ -146,14 +128,6 @@ services:
     depends_on:
       - rabbitmq
       - postgres-order
-    environment:
-      DB_CONNECTION: pgsql
-      DB_HOST: postgres-order
-      DB_PORT: 5432
-      DB_DATABASE: orders_db
-      DB_USERNAME: user
-      DB_PASSWORD: pass
-      RABBITMQ_HOST: rabbitmq
     user: "${UID}:${GID}"
     volumes:
       - ./order-service/src:/var/www
@@ -170,14 +144,6 @@ services:
     depends_on:
       - rabbitmq
       - postgres-stock
-    environment:
-      DB_CONNECTION: pgsql
-      DB_HOST: postgres-stock
-      DB_PORT: 5432
-      DB_DATABASE: stock_db
-      DB_USERNAME: user
-      DB_PASSWORD: pass
-      RABBITMQ_HOST: rabbitmq
     user: "${UID}:${GID}"
     volumes:
       - ./stock-service/src:/var/www
@@ -193,8 +159,6 @@ services:
     container_name: notification-listener
     depends_on:
       - rabbitmq
-    environment:
-      RABBITMQ_HOST: rabbitmq
     user: "${UID}:${GID}"
     volumes:
       - ./notification-service/src:/var/www

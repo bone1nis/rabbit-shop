@@ -1,0 +1,41 @@
+# General files to ignore
+.git
+.gitignore
+.dockerignore
+Dockerfile
+README.md
+LICENSE
+.vscode
+.idea
+.DS_Store
+*.log
+
+# Environment files in the root
+.env
+.env.*
+
+# Build artifacts
+dist
+build
+out
+
+# Laravel microservices - Order Service
+order-service/src/vendor
+order-service/src/node_modules
+order-service/src/storage/*.key
+order-service/src/public/storage
+order-service/src/*.log
+
+# Laravel microservices - Stock Service
+stock-service/src/vendor
+stock-service/src/node_modules
+stock-service/src/storage/*.key
+stock-service/src/public/storage
+stock-service/src/*.log
+
+# Laravel microservices - Notification Service
+notification-service/src/vendor
+notification-service/src/node_modules
+notification-service/src/storage/*.key
+notification-service/src/public/storage
+notification-service/src/*.log
