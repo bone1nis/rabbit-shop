@@ -18,7 +18,7 @@ COPY composer.json composer.lock ./
 
 RUN composer install --no-scripts --optimize-autoloader --no-interaction
 
-COPY ../.. .
+COPY . .
 
 RUN php artisan package:discover --ansi
 
