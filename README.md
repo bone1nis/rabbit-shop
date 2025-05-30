@@ -100,7 +100,7 @@ docker-compose up --build -d
 
 ### 4. Инициализация базы данных и миграции
 
-Для микросервисов order и notification пропиши миграции и сиды
+Для микросервисов order и notification пропишите миграции и сиды
 
 ```bash
 docker exec -it order-service php artisan migrate --seed

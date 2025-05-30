@@ -49,14 +49,11 @@ services:
       - rabbitmq
       - postgres-order
     user: "${UID}:${GID}"
-    volumes:
-      - ./order-service/src:/var/www:cached
-      - order-service-vendor:/var/www/vendor
     ports:
       - "9001:9000"
     networks:
       - app-network
-    command: sh -c "composer install --no-interaction --optimize-autoloader && php-fpm"
+    command: php-fpm
 
   notification-service:
     build:
@@ -66,14 +63,11 @@ services:
     depends_on:
       - rabbitmq
     user: "${UID}:${GID}"
-    volumes:
-      - ./notification-service/src:/var/www:cached
-      - notification-service-vendor:/var/www/vendor
     ports:
       - "9002:9000"
     networks:
       - app-network
-    command: sh -c "composer install --no-interaction --optimize-autoloader && php-fpm"
+    command: php-fpm
 
   stock-service:
     build:
@@ -84,14 +78,11 @@ services:
       - rabbitmq
       - postgres-stock
     user: "${UID}:${GID}"
-    volumes:
-      - ./stock-service/src:/var/www:cached
-      - stock-service-vendor:/var/www/vendor
     ports:
       - "9003:9000"
     networks:
       - app-network
-    command: sh -c "composer install --no-interaction --optimize-autoloader && php-fpm"
+    command: php-fpm
 
   order-nginx:
     image: nginx:alpine
@@ -142,8 +133,6 @@ services:
       - postgres-order
     user: "${UID}:${GID}"
     volumes:
-      - ./order-service/src:/var/www:cached
-      - order-service-vendor:/var/www/vendor
       - ./order-service/_docker/scripts:/_docker/scripts:ro
     networks:
       - app-network
@@ -159,8 +148,6 @@ services:
       - postgres-stock
     user: "${UID}:${GID}"
     volumes:
-      - ./stock-service/src:/var/www:cached
-      - stock-service-vendor:/var/www/vendor
       - ./stock-service/_docker/scripts:/_docker/scripts:ro
     networks:
       - app-network
@@ -175,8 +162,6 @@ services:
       - rabbitmq
     user: "${UID}:${GID}"
     volumes:
-      - ./notification-service/src:/var/www:cached
-      - notification-service-vendor:/var/www/vendor
       - ./notification-service/_docker/scripts:/_docker/scripts:ro
     networks:
       - app-network
@@ -189,6 +174,3 @@ networks:
 volumes:
   pgdata_order:
   pgdata_stock:
-  order-service-vendor:
-  stock-service-vendor:
-  notification-service-vendor:
