@@ -1,5 +1,8 @@
 FROM php:8.2-fpm
 
+ARG uid=1000
+ARG gid=1000
+
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -22,8 +25,10 @@ COPY . .
 
 RUN php artisan package:discover --ansi
 
-RUN chown -R www-data:www-data /var/www \
-    && chmod -R 755 /var/www/storage
+RUN chown -R ${uid}:${gid} /var/www/storage /var/www/bootstrap/cache /var/www/.env
+
+RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache \
+    && chmod 664 /var/www/.env
 
 EXPOSE 9000
 

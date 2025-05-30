@@ -44,6 +44,9 @@ services:
     build:
       context: ./order-service/src
       dockerfile: ../_docker/app/Dockerfile
+      args:
+        uid: 1000
+        gid: 1000
     container_name: order-service
     depends_on:
       - rabbitmq
@@ -59,6 +62,9 @@ services:
     build:
       context: ./notification-service/src
       dockerfile: ../_docker/app/Dockerfile
+      args:
+        uid: 1000
+        gid: 1000
     container_name: notification-service
     depends_on:
       - rabbitmq
@@ -73,6 +79,9 @@ services:
     build:
       context: ./stock-service/src
       dockerfile: ../_docker/app/Dockerfile
+      args:
+        uid: 1000
+        gid: 1000
     container_name: stock-service
     depends_on:
       - rabbitmq
